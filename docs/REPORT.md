@@ -6,15 +6,9 @@
 **lecturer:** [Engineer MOUNE]  
 
 ## Table of Contents
-1. [Abstract](#abstract)
-2. [Introduction](#introduction)
-3. [System Architecture](#system-architecture)
-4. [Implementation](#implementation)
-5. [Results & Testing](#results--testing)
-6. [Conclusion](#conclusion)
-
-## Abstract
-[Write 150-word summary here]
+1. [Introduction](#introduction)
+2. [System Architecture](#system-architecture)
+3. [Conclusion](#conclusion)
 
 ## 1. Introduction
 ### 1.1 Problem Statement
