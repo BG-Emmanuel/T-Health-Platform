@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Database
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: thealth
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Redis for caching
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  # API Gateway
+  api-gateway:
+    build: ./services/api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - USER_SERVICE_URL=http://user-service:3001
+      - APPOINTMENT_SERVICE_URL=http://appointment-service:3002
+      - DATA_SERVICE_URL=http://data-service:3003
+      - JWT_SECRET=your-super-secret-jwt-key-here
+    depends_on:
+      - user-service
+      - appointment-service
+      - data-service
+
+  # User Service
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://admin:password@postgres:5432/thealth
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-super-secret-jwt-key-here
+    depends_on:
+      - postgres
+      - redis
+
+  # Data Service
+  data-service:
+    build: ./services/data-service
+    ports:
+      - "3003:3003"
+    environment:
+      - DATABASE_URL=postgresql://admin:password@postgres:5432/thealth
+    depends_on:
+      - postgres
+
+  # Appointment Service
+  appointment-service:
+    build: ./services/appointment-service
+    ports:
+      - "3002:3002"
+    environment:
+      - DATABASE_URL=postgresql://admin:password@postgres:5432/thealth
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
